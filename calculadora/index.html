@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="UTF-8">
+    <title>document</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="todo">
+    <h2>Hola, utiliza mi menu de Calculadora</h2>
+
+    <div class="i">
+        <input type="text" id="num1" placeholder="Número 1">
+        <input type="text" id="num2" placeholder="Número 2">
+    </div>
+    
+    
+    <div class="operaciones">
+    <label><input type="radio" name="operacion" value="sumar"> Sumar</label>
+    <label><input type="radio" name="operacion" value="restar"> Restar</label>
+    <label><input type="radio" name="operacion" value="multiplicar"> Multiplicar</label>
+    <label><input type="radio" name="operacion" value="dividir"> Dividir</label>
+</div>
+<div>
+<button onclick="calcular()">Calcular</button>
+<div class="resultado" id="resultado"></div>
+</div>
+
+    </div>
+
+<script>
+    function calcular() {
+        const num1 = parseFloat(document.getElementById("num1").value);
+        const num2 = parseFloat(document.getElementById("num2").value);
+        const operacion = document.querySelector('input[name="operacion"]:checked');
+        const resultadoDiv = document.getElementById("resultado");
+
+
+        if (!operacion) {
+        resultadoDiv.textContent = "Por favor selecciona una operación.";
+        return;
+    }
+
+    let resultado;
+    switch (operacion.value) {
+        case "sumar":
+            resultado = num1 + num2;
+            break;
+            case "restar":
+                resultado = num1 - num2;
+                break;
+        case "multiplicar":
+          resultado = num1 * num2;
+        break;
+        case "dividir":
+            if (num2 === 0) {
+            resultadoDiv.textContent = "Error: división por cero (valor nulo).";
+            return;
+        } else {
+            resultado = num1 / num2;
+        }
+        break;
+    }
+    resultadoDiv.textContent = "Resultado: " + resultado;
+    }
+    </script>
+</body>
+</html>
