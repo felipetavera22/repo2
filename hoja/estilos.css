@@ -1,0 +1,298 @@
+*{
+    margin: 0;
+}
+
+header{
+    display: flex;
+    
+}
+
+.uno{
+    width: 20%;
+    background-color: #7B1AE8;
+    padding: 15px 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+}
+
+.img{
+    height: 15px;
+    width: 15px;
+}
+
+.parrafo{
+    justify-content: center;
+    display: flex;
+    font-size: 12px;
+    color: white;
+}
+
+.dos{
+    width: 20%;
+    background-color: #7B1AE8;
+    padding: 15px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    
+}
+
+.tres{
+    width: 60%;
+    background-color: #450e84;
+    display: flex; 
+    justify-content: end;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.download-btn{
+    background-color: #7B1AE8; 
+  color: white; 
+  border: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px; 
+
+
+}
+
+.lado-izq{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    max-width: 160px;
+    
+}
+
+.lado{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    max-width: 260px;
+    
+}
+
+.lad{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    max-width: 190px;
+}
+
+.img{
+    width:40px;
+    height:40px;
+}
+
+.main{
+    display: flex;
+}
+
+.izquierda{
+    width: 40%;
+    background-color: white;
+        padding: 0px 10px;
+}
+
+.palabra{
+    color: #74098c;
+}
+
+.smith{
+    font-size: 40px;
+    margin-left: 35px;
+    font-weight: 1000;
+}
+
+.key{
+    margin-left: 35px;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.job{
+    margin: 35px;
+}
+
+.iconos{
+    margin-left: 35px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 120px;
+    
+}
+
+.parrafos{
+    margin-left: 35px;
+}
+
+.icon{
+    width: 20px;
+    height: 20px;
+}
+
+.lineaNaranja{
+  height: 5px;
+  width: 2vw;
+  background-color: #74098c;
+  border: none;
+  border-radius: 4px;
+  
+}
+
+.About{
+    
+    display: flex; 
+    margin-left: 35px;
+}
+
+
+
+
+
+
+
+
+
+.derecha {
+    width: 60%;
+    padding: 20px;
+    background-color: white;
+    border-left: none;
+}
+
+.previous{
+    color: #666;
+    font-size: 14px;
+}
+
+.seccion {
+    margin-bottom: 30px;
+}
+
+.seccion h2, .seccion h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.experiencia {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+}
+
+.experiencia:last-child {
+    border-bottom: none;
+}
+
+.experiencia h4 {
+    color: #000000;
+    margin-bottom: 5px;
+}
+
+.empresa {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #7415e0;
+}
+
+.fecha {
+    color: #666;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.descripcion {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.logros {
+    padding-left: 20px;
+}
+
+.logros li {
+    margin-bottom: 5px;
+    list-style-type: none;
+    position: relative;
+}
+
+.logros li:before {
+    content: "•";
+    color: #74098c;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+ @media (max-width: 992px) {
+            .uno, .dos {
+                width: 50%;
+            }
+            
+            .tres {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .izquierda, .derecha {
+                width: 100%;
+            }
+            
+            .job img {
+                margin: 20px auto;
+                display: block;
+            }
+            
+            .smith, .key, .parrafos, .iconos, .About {
+                text-align: center;
+                margin-left: 0;
+            }
+            
+            .lado-izq, .lado, .lad {
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+
+        @media (min-width: 300px) and (max-width: 700px) {
+            header {
+                flex-direction: column;
+                
+            }
+
+            .uno, .dos{
+                width: 100%;
+
+            }
+            
+            .download-btn {
+                width: 100%;
+            }
+            
+            .parrafos {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .iconos {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width:500px){
+            .main{
+                flex-direction: column;
+                justify-content: center;
+                margin: auto;
+            }
+        }
+
+        
