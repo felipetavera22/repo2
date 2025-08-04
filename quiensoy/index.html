@@ -1,80 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="./estilos.css" />
+    <title>Portafolio Felipe</title>
+    <link rel="stylesheet" href="estilos.css" />
   </head>
   <body>
     <div class="todo">
       <header>
-        <div class="name"><strong>Felipe </strong> Tavera</div>
+        <div class="name"><strong>Felipe</strong> Tavera</div>
         <nav>
           <ul class="elementos">
-            <p class="blanco">Inicio</p>
-            <p class="grey">¿Quien Soy?</p>
-            <p class="grey">Proyectos</p>
+            <li class="blanco">Inicio</li>
+            <li class="grey">¿Quién soy?</li>
+            <li class="grey">Proyectos</li>
           </ul>
         </nav>
       </header>
-      <div class="contenedor">
-        <div><img class="image" src="./1.png" alt="" /></div>
-        <div>
-          <h1 class="h1">¿Quien soy?</h1>
+
+      <section class="contenedor">
+        <img class="image" src="./img/1.png" alt="Foto de perfil" />
+        <div class="texto">
+          <h1 class="h1">¿Quién soy?</h1>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Esse nisi
-            adipisci provident eius enim id eos fugit odit facere vitae. Sit
-            sequi praesentium, officiis rerum dicta. Deserunt ipsam officia
-            neque!
+            Soy Felipe Tavera, apasionado por la tecnología y el desarrollo de soluciones web modernas. Me gusta construir experiencias digitales que funcionen y se vean bien en cualquier dispositivo.
           </p>
-          <div class="boton"><input class="boton1" type="button" value="Leér más" /></div>
+          <div class="boton">
+            <input class="boton1" type="button" value="Leer más" />
+          </div>
         </div>
-      </div>
-      <div class="contenedor2">
+      </section>
+
+      <section class="contenedor2">
         <div>
-            <div class="fondo2"><img class="imagen2" src="./descarga.jpeg" alt=""></div>
-            <div class="parrafo2">
-                <p class="parrafo">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos provident tempora omnis cupiditate, quam accusamus reiciendis delectus ullam sit quia adipisci. Unde quidem minima optio aliquam facilis culpa velit blanditiis?</p>
-            </div>
-            <div class="parrafo2">
-                <p class="nombre">-Felipe  Tavera</p>
-            </div>
+          <div class="fondo2">
+            <img class="imagen2" src="./img/descarga (1).jpg" alt="Felipe Tavera" />
+          </div>
+          <div class="parrafo2">
+            <p class="parrafo">
+              “Mi motivación diaria es resolver problemas con creatividad, código y pasión por el aprendizaje continuo.”
+            </p>
+          </div>
+          <div class="parrafo2">
+            <p class="nombre">– Felipe Tavera</p>
+          </div>
         </div>
-      </div>
+      </section>
+
       <div class="proyectos">
         <h1>Mis proyectos</h1>
       </div>
-      
-      <div class="container3">    
+
+      <section class="container3">    
         <div class="card">
-          <img src="https://via.placeholder.com/250x140?text=Proyecto+1" alt="Proyecto 1">
+          <img src="./img/mack.jpg" alt="Proyecto 1">
           <h3>Proyecto 1</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate sit nisi beatae amet blanditiis.</p>
+          <p>Sitio web interactivo construido con HTML, CSS y JavaScript puro.</p>
           <button>Ver proyecto</button>
         </div>
-    
         <div class="card">
-          <img src="https://via.placeholder.com/250x140?text=Proyecto+2" alt="Proyecto 2">
+          <img src="./img/revista.jpg" alt="Proyecto 2">
           <h3>Proyecto 2</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate sit nisi beatae amet blanditiis.</p>
+          <p>Aplicación web conectada a base de datos con PHP y MySQL.</p>
           <button>Ver proyecto</button>
         </div>
-    
         <div class="card">
-          <img src="https://via.placeholder.com/250x140?text=Proyecto+3" alt="Proyecto 3">
+          <img src="./img/compu.jpg" alt="Proyecto 3">
           <h3>Proyecto 3</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate sit nisi beatae amet blanditiis.</p>
+          <p>Plataforma de gestión educativa usando Laravel.</p>
           <button>Ver proyecto</button>
         </div>
-    
         <div class="card">
-          <img src="https://via.placeholder.com/250x140?text=Proyecto+4" alt="Proyecto 4">
+          <img src="./img/manos.jpg" alt="Proyecto 4">
           <h3>Proyecto 4</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate sit nisi beatae amet blanditiis.</p>
+          <p>Diseño de interfaz responsiva con Tailwind y Vue.js.</p>
           <button>Ver proyecto</button>
         </div>
-      </div>
+      </section>
     </div>
   </body>
 </html>
