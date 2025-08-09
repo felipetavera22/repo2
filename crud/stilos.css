@@ -1,0 +1,36 @@
+body{
+
+    background-image: url('./2152005268.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.p-4{
+    background: linear-gradient( #f76e11, #ed892d, #ff7254, #ff533a, #f52019 );
+}
+
+.mb-4{
+    background-color: #000000;
+    border-color: #000000;
+}
+
+.modal-header{
+    background-color: #f76e11;
+    border-color: #f76e11;
+    color: #000000;
+}
+
+.modal-body{
+    background: linear-gradient( #f76e11, #ed892d, #ff7254, #ff533a, #f52019 );
+}
+
+.modal-footer{
+    background-color: #f52019;
+    border-color: #f52019;
+
+}
+
+.form-control{
+    color: #000000;
+}

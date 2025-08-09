@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galería de Lugares</title>
+  <link rel="stylesheet" href="estilos.css" />
+</head>
+<body>
+  <h1>Galería de Lugares del Mundo</h1>
+  <div class="galeria" id="galeria"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const res = await fetch("lugares.json");
+      const lugares = await res.json();
+      const galeria = document.getElementById("galeria");
+
+      lugares.forEach(lugar => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        const img = document.createElement("img");
+        img.src = lugar.url_imagen;
+        img.alt = lugar.nombre;
+        img.style.cursor = "pointer";
+        img.onclick = () => {
+          window.location.href = `detalle.html?id=${lugar.id}`;
+        };
+
+        const nombre = document.createElement("h3");
+        nombre.textContent = lugar.nombre;
+
+        const paisCiudad = document.createElement("p");
+        paisCiudad.classList.add("pais");
+        paisCiudad.textContent = `${lugar.pais} `;
+
+        const ciudad = document.createElement("h5");
+        ciudad.classList.add("ciudad");
+        ciudad.textContent = `${lugar.ciudad}`;
+
+
+        card.appendChild(img);
+        card.appendChild(nombre);
+        card.appendChild(paisCiudad);
+        card.appendChild(ciudad);
+        galeria.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

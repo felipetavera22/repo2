@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalle del Lugar</title>
+  <link rel="stylesheet" href="detalle.css" />
+</head>
+<body>
+  <div class="contenedor" id="contenedor"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      const res = await fetch("lugares.json");
+      const lugares = await res.json();
+
+      const lugar = lugares.find(l => l.id == id);
+
+      if (!lugar) {
+        document.getElementById("contenedor").innerHTML = "<p>Lugar no encontrado.</p>";
+        return;
+      }
+
+      // Aplicar gradiente de fondo
+      document.body.style.background = `linear-gradient(to right, ${lugar.categoria.colorPrimario}, ${lugar.categoria.colorSecundario})`;
+
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = `
+        <div class="tarjeta-detalle">
+          <img src="${lugar.url_imagen}" alt="${lugar.nombre}" />
+          <h1>${lugar.nombre}</h1>
+          <h2>${lugar.ciudad}, ${lugar.pais}</h2>
+          <p>${lugar.descripcion}</p>
+
+          <h3>Datos Interesantes</h3>
+          <ul>
+            ${lugar.datosInteresantes.map(d => `<li><strong>${d.titulo}:</strong> ${d.valor}</li>`).join("")}
+          </ul>
+
+          <h3>Actividades Recomendadas</h3>
+          <ul>
+            ${lugar.actividadesRecomendadas.map(a => `<li>${a}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
