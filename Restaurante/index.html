@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurante San Felipe</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <div class="conten d-flex justify-content-between align-items-center p-3 bg-light shadow">
+    <h1 class="m-0">Restaurante San Felipe</h1>
+    <div>
+      <button class="btn btn-info" onclick="mostrarReservas()">📋 Ver Reservas</button>
+      <button class="btn btn-success" onclick="agregarMesa()">➕ Agregar Mesa</button>
+    </div>
+  </div>
+
+  <!-- Contenedor de mesas -->
+  <div class="container mt-4">
+    <div class="row" id="listaMesas"></div>
+  </div>
+
+  <!-- Modal para Reservar -->
+  <div class="modal fade" id="modalReserva" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nueva Reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formReserva">
+            <div class="mb-3">
+              <label class="form-label">Nombre del cliente</label>
+              <input type="text" id="nombreCliente" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Número de personas</label>
+              <input type="number" id="numPersonas" class="form-control" min="1" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fecha</label>
+              <input type="date" id="fechaReserva" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Hora</label>
+              <input type="time" id="horaReserva" class="form-control" min="08:00" max="20:00" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ocasión especial</label>
+              <select id="ocasion" class="form-select">
+                <option value="ninguna">Ninguna</option>
+                <option value="cumpleaños">Cumpleaños</option>
+                <option value="aniversario">Aniversario</option>
+                <option value="negocios">Negocios</option>
+                <option value="romántica">Romántica</option>
+                <option value="graduación">Graduación</option>
+                <option value="madre">Día de la Madre</option>
+                <option value="padre">Día del Padre</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para ver Reservas -->
+  <div class="modal fade" id="modalVerReservas" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Lista de Reservas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+
+          <!-- 🔍 Filtros -->
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <input type="text" id="filtroReservas" class="form-control" placeholder="🔍 Buscar por cliente, mesa, ocasión">
+            </div>
+            <div class="col-md-3">
+              <select id="filtroEstado" class="form-select">
+                <option value="">📌 Todos los estados</option>
+                <option value="activa">Activa</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+              <input type="date" id="filtroFechaInicio" class="form-control">
+              <input type="date" id="filtroFechaFin" class="form-control">
+            </div>
+            <div class="col-md-2">
+              <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">♻️ Limpiar</button>
+            </div>
+          </div>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Mesa</th>
+                <th>Cliente</th>
+                <th>Personas</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Ocasión</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaReservas"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Tu script -->
+  <script src="script.js"></script>
+</body>
+</html>
