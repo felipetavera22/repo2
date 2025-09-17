@@ -2,23 +2,130 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Reservas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Reservas - Restaurante San Felipe</title>
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-light">
 
   <div class="container py-4">
-    <h1 class="mb-4 text-center">📋 Lista de Reservas</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="m-0">📋 Gestión de Reservas</h1>
+      <a href="index.html" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver a Mesas
+      </a>
+    </div>
 
-    <a href="index.html" class="btn btn-secondary mb-3">⬅️ Volver a Mesas</a>
+    <!-- 🔍 Filtros -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="m-0"><i class="bi bi-funnel"></i> Filtros de Búsqueda</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input type="text" id="filtroReservas" class="form-control" placeholder="Buscar por cliente, mesa...">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <select id="filtroEstado" class="form-select">
+              <option value="">Todos los estados</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Finalizada">Finalizada</option>
+              <option value="No Show">No Show</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input type="date" id="filtroFecha" class="form-control">
+          </div>
+          <div class="col-md-2">
+            <select id="filtroOcasion" class="form-select">
+              <option value="">Todas las ocasiones</option>
+              <option value="cumpleaños">Cumpleaños</option>
+              <option value="aniversario">Aniversario</option>
+              <option value="reunion">Reunión de Negocios</option>
+              <option value="romantica">Cena Romántica</option>
+              <option value="graduacion">Graduación</option>
+              <option value="despedida">Despedida</option>
+              <option value="familia">Reunión Familiar</option>
+              <option value="ninguna">Ninguna</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button id="btnLimpiarFiltros" class="btn btn-secondary w-100">
+              <i class="bi bi-x-circle"></i> Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="row" id="listaReservas">
       <!-- Cards de reservas dinámicas -->
     </div>
   </div>
 
-  <script src="./script.js"></script>
-</body>
-</html>
-
+  <!-- Modal para Editar Reserva -->
+  <div class="modal fade" id="modalEditarReserva" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditarReserva">
+            <input type="hidden" id="editIdReserva">
+            <div class="mb-3">
+              <label class="form-label">Nombre del cliente *</label>
+              <input type="text" id="editNombreCliente" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Número de personas *</label>
+              <input type="number" id="editNumPersonas" class="form-control" min="1" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fecha *</label>
+              <input type="date" id="editFechaReserva" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Hora *</label>
+              <input type="time" id="editHoraReserva" class="form-control" min="08:00" max="20:00" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Mesa *</label>
+              <select id="editMesaReserva" class="form-select" required>
+                <option value="">Seleccione una mesa</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Ocasión especial</label>
+              <select id="editOcasion" class="form-select">
+                <option value="ninguna">Ninguna</option>
+                <option value="cumpleaños">Cumpleaños</option>
+                <option value="aniversario">Aniversario</option>
+                <option value="reunion">Reunión de Negocios</option>
+                <option value="romantica">Cena Romántica</option>
+                <option value="graduacion">Graduación</option>
+                <option value="despedida">Despedida</option>
+                <option value="familia">Reunión Familiar</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Notas adicionales</label>
+              <textarea id="editNotasAdicionales" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Estado de la reserva</label>
+              <select id="editEstadoReserva" class="form-select">
+                <option value="Pendiente">Pendiente</option>
+                <option value="Confirmada">Confirmada</option>
+                <option value="Cancelada">Cancelada</option>
+                <option value="Finalizada">Finalizada</
