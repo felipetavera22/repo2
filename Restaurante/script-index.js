@@ -37,12 +37,12 @@ function guardarReservas(reservas) {
 // Utilidades
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  const toast = new bootstrap.Toast(document.getElementById('liveToast'));
-  const toastMessage = document.getElementById('toastMessage');
+  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
+  const toastMessage = document.getElementById("toastMessage");
 
   toastMessage.textContent = mensaje;
-  document.getElementById('liveToast').className =
-    `toast ${tipo === 'error' ? 'bg-danger' : tipo === 'success' ? 'bg-success' : 'bg-info'} text-white`;
+  document.getElementById("liveToast").className =
+    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
 
   toast.show();
 }
@@ -55,7 +55,6 @@ function mostrarConfirmacion(mensaje, callback) {
 
   const botonConfirmar = document.getElementById("btnConfirmarAccion");
 
-  // Evitar múltiples listeners
   const nuevoBoton = botonConfirmar.cloneNode(true);
   botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
 
@@ -74,7 +73,7 @@ function validarFechaPosterior(fecha) {
 }
 
 function validarHoraRango(hora) {
-  const [horas] = hora.split(':').map(Number);
+  const [horas] = hora.split(":").map(Number);
   return horas >= 8 && horas < 20;
 }
 
@@ -84,7 +83,6 @@ function esMesaDisponible(idMesa, fecha, hora, excluirReservaId = null) {
 
   if (!mesa || mesa.estado !== "disponible") return false;
 
-  // Verificar si hay reservas que coincidan en la misma fecha, hora y mesa
   const reservasCoincidentes = reservas.filter(r => {
     if (excluirReservaId && r.idReserva === excluirReservaId) return false;
     return (
@@ -171,8 +169,8 @@ function renderMesas() {
           <button class="btn btn-warning btn-sm" onclick="editarMesa('${mesa.id}')">
             <i class="bi bi-pencil"></i> Editar
           </button>
-          <button class="btn btn-primary btn-sm ${mesa.estado !== 'disponible' ? 'disabled' : ''}" 
-                  onclick="reservarMesa('${mesa.id}')" ${mesa.estado !== 'disponible' ? 'disabled' : ''}>
+          <button class="btn btn-primary btn-sm ${mesa.estado !== "disponible" ? "disabled" : ""}" 
+                  onclick="reservarMesa('${mesa.id}')" ${mesa.estado !== "disponible" ? "disabled" : ""}>
             <i class="bi bi-calendar-plus"></i> Reservar
           </button>
           <button class="btn btn-danger btn-sm" onclick="eliminarMesa('${mesa.id}')">
@@ -227,8 +225,8 @@ function filtrarMesas() {
             <button class="btn btn-warning btn-sm" onclick="editarMesa('${mesa.id}')">
               <i class="bi bi-pencil"></i> Editar
             </button>
-            <button class="btn btn-primary btn-sm ${mesa.estado !== 'disponible' ? 'disabled' : ''}" 
-                    onclick="reservarMesa('${mesa.id}')" ${mesa.estado !== 'disponible' ? 'disabled' : ''}>
+            <button class="btn btn-primary btn-sm ${mesa.estado !== "disponible" ? "disabled" : ""}" 
+                    onclick="reservarMesa('${mesa.id}')" ${mesa.estado !== "disponible" ? "disabled" : ""}>
               <i class="bi bi-calendar-plus"></i> Reservar
             </button>
             <button class="btn btn-danger btn-sm" onclick="eliminarMesa('${mesa.id}')">
@@ -246,8 +244,11 @@ function filtrarMesas() {
 // CRUD Mesas
 // ====================
 function agregarMesa() {
-  const id = prompt("Identificador único de la mesa (ej. mesa1, mesa2):");
-  if (!id) return;
+  const id = prompt("Número de la mesa (solo números):");
+  if (!id || !/^[0-9]+$/.test(id)) {
+    mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
+    return;
+  }
 
   const capacidad = parseInt(prompt("Capacidad de la mesa (número de personas):"), 10);
   if (isNaN(capacidad) || capacidad <= 0) {
@@ -255,25 +256,21 @@ function agregarMesa() {
     return;
   }
 
-  const ubicacion = prompt("Ubicación de la mesa (ej. Ventana, Jardín, Terraza):");
-  if (!ubicacion) {
-    mostrarMensaje("Debe ingresar una ubicación", "error");
+  const ubicacion = prompt("Ubicación de la mesa (solo letras):");
+  if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
+    mostrarMensaje("La ubicación solo puede contener letras", "error");
     return;
   }
 
   const mesas = obtenerMesas();
+  const mesaId = "mesa" + id;
 
-  if (mesas.some(m => m.id === id)) {
+  if (mesas.some(m => m.id === mesaId)) {
     mostrarMensaje("Ya existe una mesa con ese identificador", "error");
     return;
   }
 
-  mesas.push({
-    id,
-    capacidad,
-    ubicacion,
-    estado: "disponible"
-  });
+  mesas.push({ id: mesaId, capacidad, ubicacion, estado: "disponible" });
 
   guardarMesas(mesas);
   renderMesas();
@@ -290,7 +287,7 @@ function editarMesa(id) {
   }
 
   document.getElementById("editMesaId").value = mesa.id;
-  document.getElementById("editMesaIdentificador").value = mesa.id;
+  document.getElementById("editMesaIdentificador").value = mesa.id.replace("mesa", "");
   document.getElementById("editMesaCapacidad").value = mesa.capacidad;
   document.getElementById("editMesaUbicacion").value = mesa.ubicacion;
   document.getElementById("editMesaEstado").value = mesa.estado;
@@ -337,7 +334,7 @@ function reservarMesa(idMesa) {
     selectMesas.appendChild(option);
   });
 
-  const hoy = new Date().toISOString().split('T')[0];
+  const hoy = new Date().toISOString().split("T")[0];
   document.getElementById("fechaReserva").min = hoy;
 
   const modal = new bootstrap.Modal(document.getElementById("modalReserva"));
@@ -349,12 +346,10 @@ function reservarMesa(idMesa) {
 // ====================
 document.addEventListener("DOMContentLoaded", function() {
   const mesas = obtenerMesas();
-  if (mesas.length === 0) {
-    inicializarMesas();
-  } else {
-    renderMesas();
-  }
+  if (mesas.length === 0) inicializarMesas();
+  else renderMesas();
 
+  // Guardar nueva reserva
   document.getElementById("formReserva").addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -368,27 +363,22 @@ document.addEventListener("DOMContentLoaded", function() {
       mostrarMensaje("El nombre del cliente es obligatorio", "error");
       return;
     }
-
     if (isNaN(numPersonas) || numPersonas <= 0) {
       mostrarMensaje("El número de personas debe ser un número positivo mayor que cero", "error");
       return;
     }
-
     if (!validarFechaPosterior(fechaReserva)) {
       mostrarMensaje("La fecha debe ser posterior a hoy", "error");
       return;
     }
-
     if (!validarHoraRango(horaReserva)) {
       mostrarMensaje("La hora debe estar entre 8:00 AM y 8:00 PM", "error");
       return;
     }
-
     if (!idMesaAsignada) {
       mostrarMensaje("Debe seleccionar una mesa", "error");
       return;
     }
-
     if (!esMesaDisponible(idMesaAsignada, fechaReserva, horaReserva)) {
       mostrarMensaje("La mesa seleccionada no está disponible en esa fecha y hora", "error");
       return;
@@ -404,7 +394,7 @@ document.addEventListener("DOMContentLoaded", function() {
       ocasionEspecial: document.getElementById("ocasion").value,
       notasAdicionales: document.getElementById("notasAdicionales").value.trim(),
       estado: "Pendiente",
-      fechaCreacion: new Date().toISOString().split('T')[0]
+      fechaCreacion: new Date().toISOString().split("T")[0]
     };
 
     const reservas = obtenerReservas();
@@ -418,55 +408,50 @@ document.addEventListener("DOMContentLoaded", function() {
     this.reset();
   });
 
+  // Guardar cambios al editar mesa
   document.getElementById("formEditarMesa").addEventListener("submit", function(e) {
     e.preventDefault();
 
     const idOriginal = document.getElementById("editMesaId").value;
-    const id = document.getElementById("editMesaIdentificador").value.trim();
+    const idNum = document.getElementById("editMesaIdentificador").value.trim();
     const capacidad = parseInt(document.getElementById("editMesaCapacidad").value, 10);
     const ubicacion = document.getElementById("editMesaUbicacion").value.trim();
     const estado = document.getElementById("editMesaEstado").value;
 
-    if (!id) {
-      mostrarMensaje("El identificador es obligatorio", "error");
+    if (!/^[0-9]+$/.test(idNum)) {
+      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
       return;
     }
-
     if (isNaN(capacidad) || capacidad <= 0) {
       mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
       return;
     }
-
-    if (!ubicacion) {
-      mostrarMensaje("La ubicación es obligatoria", "error");
+    if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
+      mostrarMensaje("La ubicación solo puede contener letras", "error");
       return;
     }
 
+    const mesaId = "mesa" + idNum;
+
     const mesas = obtenerMesas();
-    if (id !== idOriginal && mesas.some(m => m.id === id)) {
+    if (mesaId !== idOriginal && mesas.some(m => m.id === mesaId)) {
       mostrarMensaje("Ya existe una mesa con ese identificador", "error");
       return;
     }
 
     const mesaIndex = mesas.findIndex(m => m.id === idOriginal);
-
     if (mesaIndex === -1) {
       mostrarMensaje("Mesa no encontrada", "error");
       return;
     }
 
-    mesas[mesaIndex] = {
-      id,
-      capacidad,
-      ubicacion,
-      estado
-    };
+    mesas[mesaIndex] = { id: mesaId, capacidad, ubicacion, estado };
 
-    if (id !== idOriginal) {
+    if (mesaId !== idOriginal) {
       const reservas = obtenerReservas();
       reservas.forEach(reserva => {
         if (reserva.idMesaAsignada === idOriginal) {
-          reserva.idMesaAsignada = id;
+          reserva.idMesaAsignada = mesaId;
         }
       });
       guardarReservas(reservas);
