@@ -403,8 +403,8 @@ document.addEventListener('DOMContentLoaded', function () {
         apiStatus.textContent = "🔌 Conectando a Groq API...";
         apiStatus.style.color = "#ff9800";
         
-        addMessage("Sistema", "🤖 ¡Bienvenido al Debate sobre Energía Nuclear!", 'system');
-        addMessage("Sistema", "Haz clic en 'Iniciar debate automático' para comenzar.", 'system');
+        addMessage("Sistema", " ¡Bienvenido al Debate sobre Energía Nuclear!", 'system');
+        addMessage("Sistema", "Bienvenido, ¿sobre qué tema te gustaría debatir?", 'system');
         
         setTimeout(() => {
             apiStatus.textContent = "✅ Groq API - Listo";
