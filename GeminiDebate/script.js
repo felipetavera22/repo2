@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const sendBtn = document.getElementById('sendBtn');
     const apiStatus = document.getElementById('apiStatus');
     
-    // Groq API - ACTUALIZADO
     const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
     const GROQ_API_KEY = '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';
     
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let typingSpeed = 30;
     let currentTopic = "energía nuclear";
 
-    // Función para limitar palabras
     function limitarPalabras(texto, limite = 50) {
         const palabras = texto.trim().split(/\s+/);
         if (palabras.length > limite) {
@@ -24,14 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return texto;
     }
 
-    // Función para formatear la hora actual
     function getCurrentTime() {
         const now = new Date();
         return now.getHours().toString().padStart(2, '0') + ':' +
             now.getMinutes().toString().padStart(2, '0');
     }
 
-    // Función para agregar un mensaje al chat
     function addMessage(sender, text, type = 'user') {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message-with-avatar ${type}`;
@@ -89,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Función para mostrar mensaje con efecto de escritura
     function addMessageWithTypingEffect(sender, text, type, callback) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message-with-avatar ${type}`;
@@ -154,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, typingSpeed);
     }
 
-    // Función para mostrar el indicador de escribiendo
     function showTypingIndicator(type) {
         const typingDiv = document.createElement('div');
         typingDiv.className = `message-with-avatar ${type}`;
@@ -190,7 +184,6 @@ document.addEventListener('DOMContentLoaded', function () {
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // Función para ocultar el indicador de escribiendo
     function hideTypingIndicator(type) {
         const indicator = document.getElementById(`${type}-typing`);
         if (indicator) {
@@ -198,7 +191,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para mostrar un mensaje de error
     function showError(message) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
@@ -211,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
-    // FUNCIÓN PRINCIPAL CON GROQ API (CORREGIDA)
     async function callGroqAPI(prompt, persona) {
         try {
             console.log('Enviando solicitud a Groq API...');
@@ -274,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para obtener una respuesta contextual de la IA
     async function getAIResponse(type, context, userQuestion = null, isDebateMode = false) {
         let persona, prompt;
         
@@ -319,7 +309,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para iniciar el debate automático
     async function startDebate() {
         if (isDebateActive) return;
         
@@ -329,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function () {
         userInput.disabled = true;
         sendBtn.disabled = true;
         
-        // Reiniciar el historial del debate
         debateHistory = [];
         chatContainer.innerHTML = '';
         
@@ -361,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para enviar pregunta del usuario
     async function sendUserQuestion() {
         const question = userInput.value.trim();
         if (!question || isDebateActive) return;
@@ -389,7 +376,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para borrar el chat
     function clearChat() {
         if (isDebateActive) return;
         
@@ -398,7 +384,6 @@ document.addEventListener('DOMContentLoaded', function () {
         addMessage("Sistema", "💬 Chat borrado. ¿Sobre qué quieres debatir?", 'system');
     }
 
-    // Inicialización
     function initializeChat() {
         apiStatus.textContent = "🔌 Conectando a Groq API...";
         apiStatus.style.color = "#ff9800";
@@ -412,7 +397,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 2000);
     }
 
-    // Event listeners
     startBtn.addEventListener('click', startDebate);
     clearBtn.addEventListener('click', clearChat);
     sendBtn.addEventListener('click', sendUserQuestion);
@@ -423,7 +407,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
-    // Inicializar al cargar
     window.addEventListener('load', function() {
         setTimeout(() => {
             initializeChat();
