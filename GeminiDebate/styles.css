@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+.header {
+    background: linear-gradient(to right, #25D366, #128C7E);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.clear-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.clear-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #e5ddd5;
+}
+
+.message {
+    max-width: 80%;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-content {
+    padding: 12px;
+    border-radius: 10px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.ambientalista {
+    align-items: flex-start;
+}
+
+.ambientalista .message-content {
+    background-color: #dcf8c6;
+    border-top-left-radius: 0;
+}
+
+.economista {
+    align-items: flex-end;
+}
+
+.economista .message-content {
+    background-color: #ffffff;
+    border-top-right-radius: 0;
+}
+
+.user {
+    align-items: flex-end;
+}
+
+.user .message-content {
+    background-color: #d1e8ff;
+    border-top-right-radius: 0;
+}
+
+.system {
+    align-items: center;
+    max-width: 100%;
+}
+
+.system .message-content {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    text-align: center;
+    font-style: italic;
+    color: #666;
+}
+
+.sender {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.ambientalista .sender {
+    color: #25D366;
+}
+
+.economista .sender {
+    color: #128C7E;
+    text-align: right;
+}
+
+.user .sender {
+    color: #1a73e8;
+    text-align: right;
+}
+
+.system .sender {
+    color: #666;
+    text-align: center;
+}
+
+.timestamp {
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.input-area {
+    padding: 15px;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-input-container {
+    display: flex;
+    gap: 10px;
+}
+
+#userInput {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#sendBtn {
+    background: linear-gradient(to right, #25D366, #128C7E);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#sendBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.start-btn {
+    background: linear-gradient(to right, #25D366, #128C7E);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.start-btn:active {
+    transform: translateY(0);
+}
+
+.start-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.api-status {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #128C7E;
+    font-weight: 600;
+}
+
+.typing-indicator {
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: inline-flex;
+    margin-bottom: 10px;
+    align-items: center;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #999;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typingAnimation 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-5px);
+    }
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.ambientalista-avatar {
+    background: linear-gradient(to right, #4CAF50, #8BC34A);
+    color: white;
+}
+
+.economista-avatar {
+    background: linear-gradient(to right, #2196F3, #03A9F4);
+    color: white;
+}
+
+.user-avatar {
+    background: linear-gradient(to right, #9C27B0, #E91E63);
+    color: white;
+}
+
+.system-avatar {
+    background: linear-gradient(to right, #607D8B, #78909C);
+    color: white;
+}
+
+.message-with-avatar {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.message-container {
+    max-width: 80%;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.character-typing .message-content {
+    min-height: 20px;
+    background-color: #f5f5f5;
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.character-typing .message-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.api-key-container {
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.api-key-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.api-key-input:focus {
+    outline: none;
+    border-color: #25D366;
+}

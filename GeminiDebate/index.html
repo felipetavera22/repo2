@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debate: Energía Nuclear</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Debate: Energía Nuclear</h1>
+            <button class="clear-btn" id="clearBtn">Borrar chat</button>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <!-- Los mensajes se agregarán aquí dinámicamente -->
+        </div>
+
+        <div class="input-area">
+            <div class="user-input-container">
+                <input type="text" id="userInput" placeholder="Escribe tu pregunta o comentario...">
+                <button id="sendBtn">Enviar</button>
+            </div>
+            <button class="start-btn" id="startBtn">Iniciar debate automático</button>
+            <div class="api-status" id="apiStatus">Conectando a Groq API...</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
