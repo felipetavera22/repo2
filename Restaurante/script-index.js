@@ -247,38 +247,57 @@ function filtrarMesas() {
 // CRUD Mesas
 // ====================
 function agregarMesa() {
-  const id = prompt("Número de la mesa (solo números):");
-  if (!id || !/^[0-9]+$/.test(id)) {
-    mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
-    return;
-  }
+  // limpiar formulario
+  document.getElementById("formularioMesa").reset();
+  document.getElementById("indiceMesa").value = "";
 
-  const capacidad = parseInt(prompt("Capacidad de la mesa (número de personas):"), 10);
-  if (isNaN(capacidad) || capacidad <= 0) {
-    mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
-    return;
-  }
+  // mostrar modal
+  const modal = new bootstrap.Modal(document.getElementById("modalMesa"));
+  modal.show();
 
-  const ubicacion = prompt("Ubicación de la mesa (solo letras):");
-  if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
-    mostrarMensaje("La ubicación solo puede contener letras", "error");
-    return;
-  }
+  // manejar envío
+  const form = document.getElementById("formularioMesa");
+  form.onsubmit = function (e) {
+    e.preventDefault();
 
-  const mesas = obtenerMesas();
-  const mesaId = "mesa" + id;
+    // ⚡ tomamos valores
+    const id = document.getElementById("inputIdMesa").value.trim();
+    const capacidad = parseInt(document.getElementById("inputCapacidadMesa").value, 10);
+    const ubicacion = document.getElementById("selectUbicacion").value;
+    const estado = document.getElementById("selectEstadoMesa").value || "disponible";
 
-  if (mesas.some(m => m.id === mesaId)) {
-    mostrarMensaje("Ya existe una mesa con ese identificador", "error");
-    return;
-  }
+    // ⚡ validaciones
+    if (!id || !/^[0-9]+$/.test(id)) {
+      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
+      return;
+    }
+    if (isNaN(capacidad) || capacidad <= 0) {
+      mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
+      return;
+    }
+    if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
+      mostrarMensaje("La ubicación solo puede contener letras", "error");
+      return;
+    }
 
-  mesas.push({ id: mesaId, capacidad, ubicacion, estado: "disponible" });
+    // ⚡ guardamos
+    const mesas = obtenerMesas();
+    const mesaId = "mesa" + id;
 
-  guardarMesas(mesas);
-  renderMesas();
-  mostrarMensaje("Mesa agregada correctamente", "success");
+    if (mesas.some(m => m.id === mesaId)) {
+      mostrarMensaje("Ya existe una mesa con ese identificador", "error");
+      return;
+    }
+
+    mesas.push({ id: mesaId, capacidad, ubicacion, estado });
+    guardarMesas(mesas);
+    renderMesas();
+
+    modal.hide();
+    mostrarMensaje("Mesa agregada correctamente", "success");
+  };
 }
+
 
 function editarMesa(id) {
   const mesas = obtenerMesas();
