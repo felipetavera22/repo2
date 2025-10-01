@@ -62,7 +62,7 @@
   </div>
 
   <!-- Modal para Reservar -->
-  <div class="modal fade" id="modalReserva" tabindex="-1">
+  <div class="modal fade" id="modalReserva" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -70,28 +70,26 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="formReserva">
+          <form id="formReserva" novalidate>
             <div class="mb-3">
               <label class="form-label">Nombre del cliente *</label>
-              <input type="text" id="nombreCliente" class="form-control" required>
+              <input type="text" id="nombreCliente" class="form-control">
             </div>
             <div class="mb-3">
               <label class="form-label">Número de personas *</label>
-              <input type="number" id="numPersonas" class="form-control" min="1" required>
+              <input type="number" id="numPersonas" class="form-control" min="1">
             </div>
             <div class="mb-3">
               <label class="form-label">Fecha *</label>
-              <input type="date" id="fechaReserva" class="form-control" required>
+              <input type="date" id="fechaReserva" class="form-control">
             </div>
             <div class="mb-3">
               <label class="form-label">Hora *</label>
-              <input type="time" id="horaReserva" class="form-control" min="08:00" max="20:00" required>
+              <input type="time" id="horaReserva" class="form-control" min="08:00" max="20:00">
             </div>
             <div class="mb-3">
               <label class="form-label">Mesa *</label>
-              <select id="mesaReserva" class="form-select" required>
-                <option value="">Seleccione una mesa</option>
-              </select>
+              <select id="mesaReserva" class="form-select"></select>
             </div>
             <div class="mb-3">
               <label class="form-label">Ocasión especial</label>
@@ -109,7 +107,7 @@
   </div>
 
   <!-- Modal para Editar Mesa -->
-  <div class="modal fade" id="modalEditarMesa" tabindex="-1">
+  <div class="modal fade" id="modalEditarMesa" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -117,23 +115,23 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="formEditarMesa">
+          <form id="formEditarMesa" novalidate>
             <input type="hidden" id="editMesaId">
             <div class="mb-3">
               <label class="form-label">Identificador *</label>
-              <input type="text" id="editMesaIdentificador" class="form-control" required>
+              <input type="text" id="editMesaIdentificador" class="form-control">
             </div>
             <div class="mb-3">
               <label class="form-label">Capacidad *</label>
-              <input type="number" id="editMesaCapacidad" class="form-control" min="1" required>
+              <input type="number" id="editMesaCapacidad" class="form-control" min="1">
             </div>
             <div class="mb-3">
               <label class="form-label">Ubicación *</label>
-              <input type="text" id="editMesaUbicacion" class="form-control" required>
+              <input type="text" id="editMesaUbicacion" class="form-control">
             </div>
             <div class="mb-3">
               <label class="form-label">Estado *</label>
-              <select id="editMesaEstado" class="form-select" required>
+              <select id="editMesaEstado" class="form-select">
                 <option value="disponible">Disponible</option>
                 <option value="ocupada">Ocupada</option>
                 <option value="deshabilitada">Deshabilitada</option>
@@ -146,36 +144,9 @@
     </div>
   </div>
 
-  <!-- Toast -->
-  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <strong class="me-auto">Sistema de Reservas</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
-      </div>
-      <div class="toast-body" id="toastMessage"></div>
-    </div>
-  </div>
-
-  <!-- Modal Confirmación -->
-  <div class="modal fade" id="modalConfirmacion" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirmar acción</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body" id="modalConfirmacionMensaje">¿Está seguro de que desea continuar?</div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" id="btnConfirmarAccion">Confirmar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap JS -->
+  <!-- Bootstrap + SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="./script-index.js"></script>
 </body>
 </html>

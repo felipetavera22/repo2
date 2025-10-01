@@ -37,30 +37,33 @@ function guardarReservas(reservas) {
 // Utilidades
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
-  const toastMessage = document.getElementById("toastMessage");
+  let icono = "info";
+  if (tipo === "success") icono = "success";
+  else if (tipo === "error") icono = "error";
+  else if (tipo === "warning") icono = "warning";
 
-  toastMessage.textContent = mensaje;
-  document.getElementById("liveToast").className =
-    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
-
-  toast.show();
+  Swal.fire({
+    icon: icono,
+    title: mensaje,
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true
+  });
 }
 
 function mostrarConfirmacion(mensaje, callback) {
-  document.getElementById("modalConfirmacionMensaje").textContent = mensaje;
-
-  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacion"));
-  modal.show();
-
-  const botonConfirmar = document.getElementById("btnConfirmarAccion");
-
-  const nuevoBoton = botonConfirmar.cloneNode(true);
-  botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
-
-  nuevoBoton.addEventListener("click", () => {
-    modal.hide();
-    if (typeof callback === "function") {
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: mensaje,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, continuar",
+    cancelButtonText: "Cancelar",
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed && typeof callback === "function") {
       callback();
     }
   });

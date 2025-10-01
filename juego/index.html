@@ -118,19 +118,7 @@
     <div class="subtitulo">Disfruta la experiencia</div>
   </div>
 
-  <!-- Controles de audio -->
-  <div class="audio-controls">
-    <button id="playPauseBtn">
-      <svg id="playIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-      </svg>
-      <svg id="pauseIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-        <path d="M6 4H10V20H6V4Z" fill="currentColor"/>
-        <path d="M14 4H18V20H14V4Z" fill="currentColor"/>
-      </svg>
-    </button>
-    <input type="range" id="volumeControl" class="volume-control" min="0" max="1" step="0.1" value="0.5">
-  </div>
+
 
   <!-- Audio -->
   <audio id="backgroundMusic" loop>
@@ -141,31 +129,12 @@
   <script>
     // Elementos del DOM
     const audio = document.getElementById('backgroundMusic');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const playIcon = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const volumeControl = document.getElementById('volumeControl');
 
-    // Configurar volumen inicial
-    audio.volume = volumeControl.value;
 
-    // Controlar reproducción/pausa
-    playPauseBtn.addEventListener('click', function() {
-      if (audio.paused) {
-        audio.play();
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
-      } else {
-        audio.pause();
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
-      }
-    });
 
-    // Controlar volumen
-    volumeControl.addEventListener('input', function() {
-      audio.volume = volumeControl.value;
-    });
+
+
+    
 
     // Reproducir automáticamente al cargar la página (con manejo de errores)
     window.addEventListener('load', function() {
