@@ -70,26 +70,28 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="formReserva" novalidate>
+          <form id="formReserva">
             <div class="mb-3">
               <label class="form-label">Nombre del cliente *</label>
-              <input type="text" id="nombreCliente" class="form-control">
+              <input type="text" id="nombreCliente" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Número de personas *</label>
-              <input type="number" id="numPersonas" class="form-control" min="1">
+              <input type="number" id="numPersonas" class="form-control" min="1" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Fecha *</label>
-              <input type="date" id="fechaReserva" class="form-control">
+              <input type="date" id="fechaReserva" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Hora *</label>
-              <input type="time" id="horaReserva" class="form-control" min="08:00" max="20:00">
+              <input type="time" id="horaReserva" class="form-control" min="08:00" max="20:00" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Mesa *</label>
-              <select id="mesaReserva" class="form-select"></select>
+              <select id="mesaReserva" class="form-select" required>
+                <option value="">Seleccione una mesa</option>
+              </select>
             </div>
             <div class="mb-3">
               <label class="form-label">Ocasión especial</label>
@@ -115,23 +117,23 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="formEditarMesa" novalidate>
+          <form id="formEditarMesa">
             <input type="hidden" id="editMesaId">
             <div class="mb-3">
               <label class="form-label">Identificador *</label>
-              <input type="text" id="editMesaIdentificador" class="form-control">
+              <input type="text" id="editMesaIdentificador" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Capacidad *</label>
-              <input type="number" id="editMesaCapacidad" class="form-control" min="1">
+              <input type="number" id="editMesaCapacidad" class="form-control" min="1" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Ubicación *</label>
-              <input type="text" id="editMesaUbicacion" class="form-control">
+              <input type="text" id="editMesaUbicacion" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Estado *</label>
-              <select id="editMesaEstado" class="form-select">
+              <select id="editMesaEstado" class="form-select" required>
                 <option value="disponible">Disponible</option>
                 <option value="ocupada">Ocupada</option>
                 <option value="deshabilitada">Deshabilitada</option>
@@ -144,59 +146,69 @@
     </div>
   </div>
 
-  <!-- Modal para Agregar Mesa -->
-  <div class="modal fade" id="modalMesa" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
-    <div class="modal-dialog">
+  <!-- Toast -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <strong class="me-auto">Sistema de Reservas</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+      </div>
+      <div class="toast-body" id="toastMessage"></div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmación -->
+  <div class="modal fade" id="modalConfirmacion" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Gestionar Mesa</h5>
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirmar acción</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
-          <form id="formularioMesa" novalidate>
-            <input type="hidden" id="indiceMesa">
-
-            <div class="mb-3">
-              <label for="inputIdMesa" class="form-label">Número de mesa *</label>
-              <input type="number" id="inputIdMesa" class="form-control" min="1" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="inputCapacidadMesa" class="form-label">Capacidad *</label>
-              <input type="number" id="inputCapacidadMesa" class="form-control" min="1" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="selectUbicacion" class="form-label">Ubicación *</label>
-              <select id="selectUbicacion" class="form-control">
-                <option value="Ventana">Ventana</option>
-                <option value="Barra">Barra</option>
-                <option value="Terraza">Terraza</option>
-                <option value="Zona Central">Zona Central</option>
-                <option value="Salón Privado">Salón Privado</option>
-                <option value="Zona VIP">Zona VIP</option>
-              </select>
-            </div>
-
-            <div class="mb-3" id="grupoEstadoMesa">
-              <label for="selectEstadoMesa" class="form-label">Estado *</label>
-              <select id="selectEstadoMesa" class="form-control">
-                <option value="disponible">Disponible</option>
-                <option value="ocupada">Ocupada</option>
-                <option value="deshabilitada">Deshabilitada</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-success w-100">Guardar</button>
-          </form>
+        <div class="modal-body" id="modalConfirmacionMensaje">¿Está seguro de que desea continuar?</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="btnConfirmarAccion">Confirmar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap + SweetAlert2 -->
+  <!-- Modal para Agregar Mesa -->
+<div class="modal fade" id="modalAgregarMesa" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Nueva Mesa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formAgregarMesa">
+          <div class="mb-3">
+            <label class="form-label">Número de la mesa *</label>
+            <input type="number" id="nuevaMesaNumero" class="form-control" placeholder="Ej: 9" required min="1">
+            <small class="text-muted">Solo números</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Capacidad *</label>
+            <input type="number" id="nuevaMesaCapacidad" class="form-control" placeholder="Número de personas" required min="1">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ubicación *</label>
+            <input type="text" id="nuevaMesaUbicacion" class="form-control" placeholder="Ej: Ventana, Terraza, Interior" required>
+            <small class="text-muted">Solo letras</small>
+          </div>
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-plus-circle"></i> Agregar Mesa
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="./script-index.js"></script>
 </body>
 </html>

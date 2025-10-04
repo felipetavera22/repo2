@@ -2,14 +2,14 @@
 // Constantes
 // ====================
 const OCASIONES_ESPECIALES = [
-  { value: "ninguna", text: "Ninguna", icon: "bi-calendar" },
-  { value: "cumpleaños", text: "Cumpleaños", icon: "bi-balloon" },
-  { value: "aniversario", text: "Aniversario", icon: "bi-heart" },
-  { value: "reunion", text: "Reunión de Negocios", icon: "bi-briefcase" },
-  { value: "romantica", text: "Cena Romántica", icon: "bi-emoji-kiss" },
-  { value: "graduacion", text: "Graduación", icon: "bi-mortarboard" },
-  { value: "despedida", text: "Despedida", icon: "bi-airplane" },
-  { value: "familia", text: "Reunión Familiar", icon: "bi-people" }
+  { value: "ninguna", text: "Ninguna", emoji: "📅" },
+  { value: "cumpleaños", text: "Cumpleaños", emoji: "🎂" },
+  { value: "aniversario", text: "Aniversario", emoji: "💕" },
+  { value: "reunion", text: "Reunión de Negocios", emoji: "💼" },
+  { value: "romantica", text: "Cena Romántica", emoji: "🌹" },
+  { value: "graduacion", text: "Graduación", emoji: "🎓" },
+  { value: "despedida", text: "Despedida", emoji: "✈️" },
+  { value: "familia", text: "Reunión Familiar", emoji: "👨‍👩‍👧‍👦" }
 ];
 
 // ====================
@@ -37,33 +37,30 @@ function guardarReservas(reservas) {
 // Utilidades
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  let icono = "info";
-  if (tipo === "success") icono = "success";
-  else if (tipo === "error") icono = "error";
-  else if (tipo === "warning") icono = "warning";
+  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
+  const toastMessage = document.getElementById("toastMessage");
 
-  Swal.fire({
-    icon: icono,
-    title: mensaje,
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true
-  });
+  toastMessage.textContent = mensaje;
+  document.getElementById("liveToast").className =
+    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
+
+  toast.show();
 }
 
 function mostrarConfirmacion(mensaje, callback) {
-  Swal.fire({
-    title: "¿Estás seguro?",
-    text: mensaje,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, continuar",
-    cancelButtonText: "Cancelar",
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed && typeof callback === "function") {
+  document.getElementById("modalConfirmacionMensaje").textContent = mensaje;
+
+  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacion"));
+  modal.show();
+
+  const botonConfirmar = document.getElementById("btnConfirmarAccion");
+
+  const nuevoBoton = botonConfirmar.cloneNode(true);
+  botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
+
+  nuevoBoton.addEventListener("click", () => {
+    modal.hide();
+    if (typeof callback === "function") {
       callback();
     }
   });
@@ -247,57 +244,10 @@ function filtrarMesas() {
 // CRUD Mesas
 // ====================
 function agregarMesa() {
-  // limpiar formulario
-  document.getElementById("formularioMesa").reset();
-  document.getElementById("indiceMesa").value = "";
-
-  // mostrar modal
-  const modal = new bootstrap.Modal(document.getElementById("modalMesa"));
+  document.getElementById("formAgregarMesa").reset();
+  const modal = new bootstrap.Modal(document.getElementById("modalAgregarMesa"));
   modal.show();
-
-  // manejar envío
-  const form = document.getElementById("formularioMesa");
-  form.onsubmit = function (e) {
-    e.preventDefault();
-
-    // ⚡ tomamos valores
-    const id = document.getElementById("inputIdMesa").value.trim();
-    const capacidad = parseInt(document.getElementById("inputCapacidadMesa").value, 10);
-    const ubicacion = document.getElementById("selectUbicacion").value;
-    const estado = document.getElementById("selectEstadoMesa").value || "disponible";
-
-    // ⚡ validaciones
-    if (!id || !/^[0-9]+$/.test(id)) {
-      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
-      return;
-    }
-    if (isNaN(capacidad) || capacidad <= 0) {
-      mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
-      return;
-    }
-    if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
-      mostrarMensaje("La ubicación solo puede contener letras", "error");
-      return;
-    }
-
-    // ⚡ guardamos
-    const mesas = obtenerMesas();
-    const mesaId = "mesa" + id;
-
-    if (mesas.some(m => m.id === mesaId)) {
-      mostrarMensaje("Ya existe una mesa con ese identificador", "error");
-      return;
-    }
-
-    mesas.push({ id: mesaId, capacidad, ubicacion, estado });
-    guardarMesas(mesas);
-    renderMesas();
-
-    modal.hide();
-    mostrarMensaje("Mesa agregada correctamente", "success");
-  };
 }
-
 
 function editarMesa(id) {
   const mesas = obtenerMesas();
@@ -370,6 +320,60 @@ document.addEventListener("DOMContentLoaded", function() {
   const mesas = obtenerMesas();
   if (mesas.length === 0) inicializarMesas();
   else renderMesas();
+
+  // Inicializar select de ocasiones con emojis
+  const selectOcasion = document.getElementById("ocasion");
+  if (selectOcasion) {
+    selectOcasion.innerHTML = "";
+    OCASIONES_ESPECIALES.forEach(ocasion => {
+      const option = document.createElement("option");
+      option.value = ocasion.value;
+      option.textContent = `${ocasion.emoji} ${ocasion.text}`;
+      selectOcasion.appendChild(option);
+    });
+  }
+
+  // Guardar nueva mesa
+  document.getElementById("formAgregarMesa").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const id = document.getElementById("nuevaMesaNumero").value.trim();
+    const capacidad = parseInt(document.getElementById("nuevaMesaCapacidad").value, 10);
+    const ubicacion = document.getElementById("nuevaMesaUbicacion").value.trim();
+
+    if (!id || !/^[0-9]+$/.test(id)) {
+      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
+      return;
+    }
+
+    if (isNaN(capacidad) || capacidad <= 0) {
+      mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
+      return;
+    }
+
+    if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
+      mostrarMensaje("La ubicación solo puede contener letras", "error");
+      return;
+    }
+
+    const mesas = obtenerMesas();
+    const mesaId = "mesa" + id;
+
+    if (mesas.some(m => m.id === mesaId)) {
+      mostrarMensaje("Ya existe una mesa con ese identificador", "error");
+      return;
+    }
+
+    mesas.push({ id: mesaId, capacidad, ubicacion, estado: "disponible" });
+    guardarMesas(mesas);
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById("modalAgregarMesa"));
+    modal.hide();
+    
+    renderMesas();
+    mostrarMensaje("Mesa agregada correctamente", "success");
+    this.reset();
+  });
 
   // Guardar nueva reserva
   document.getElementById("formReserva").addEventListener("submit", function(e) {
@@ -487,20 +491,4 @@ document.addEventListener("DOMContentLoaded", function() {
     mostrarMensaje("Mesa actualizada correctamente", "success");
     renderMesas();
   });
-});
-
-// ====================
-// Funciones adicionales
-// ====================
-document.addEventListener("DOMContentLoaded", function() {
-  const selectOcasion = document.getElementById("ocasion");
-  if (selectOcasion) {
-    selectOcasion.innerHTML = "";
-    OCASIONES_ESPECIALES.forEach(ocasion => {
-      const option = document.createElement("option");
-      option.value = ocasion.value;
-      option.textContent = ocasion.text;
-      selectOcasion.appendChild(option);
-    });
-  }
 });

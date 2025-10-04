@@ -1,4 +1,18 @@
 // ====================
+// Constantes
+// ====================
+const OCASIONES_ESPECIALES = [
+  { value: "ninguna", text: "Ninguna", emoji: "📅" },
+  { value: "cumpleaños", text: "Cumpleaños", emoji: "🎂" },
+  { value: "aniversario", text: "Aniversario", emoji: "💕" },
+  { value: "reunion", text: "Reunión de Negocios", emoji: "💼" },
+  { value: "romantica", text: "Cena Romántica", emoji: "🌹" },
+  { value: "graduacion", text: "Graduación", emoji: "🎓" },
+  { value: "despedida", text: "Despedida", emoji: "✈️" },
+  { value: "familia", text: "Reunión Familiar", emoji: "👨‍👩‍👧‍👦" }
+];
+
+// ====================
 // Funciones de storage
 // ====================
 function obtenerMesas() {
@@ -19,36 +33,45 @@ function guardarReservas(reservas) {
 // Utilidades
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  let icono = "info";
-  if (tipo === "success") icono = "success";
-  else if (tipo === "error") icono = "error";
-  else if (tipo === "warning") icono = "warning";
+  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
+  const toastMessage = document.getElementById("toastMessage");
 
-  Swal.fire({
-    icon: icono,
-    title: mensaje,
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 2500,
-    timerProgressBar: true
-  });
+  toastMessage.textContent = mensaje;
+  document.getElementById("liveToast").className =
+    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
+
+  toast.show();
 }
 
 function mostrarConfirmacion(mensaje, callback) {
-  Swal.fire({
-    title: "¿Estás seguro?",
-    text: mensaje,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, continuar",
-    cancelButtonText: "Cancelar",
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed && typeof callback === "function") {
+  document.getElementById("modalConfirmacionMensaje").textContent = mensaje;
+
+  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacion"));
+  modal.show();
+
+  const botonConfirmar = document.getElementById("btnConfirmarAccion");
+
+  const nuevoBoton = botonConfirmar.cloneNode(true);
+  botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
+
+  nuevoBoton.addEventListener("click", () => {
+    modal.hide();
+    if (typeof callback === "function") {
       callback();
     }
   });
+}
+
+// Función para obtener el emoji de la ocasión
+function obtenerEmojiOcasion(valorOcasion) {
+  const ocasion = OCASIONES_ESPECIALES.find(o => o.value === valorOcasion);
+  return ocasion ? ocasion.emoji : "📅";
+}
+
+// Función para obtener el texto de la ocasión
+function obtenerTextoOcasion(valorOcasion) {
+  const ocasion = OCASIONES_ESPECIALES.find(o => o.value === valorOcasion);
+  return ocasion ? ocasion.text : "Ninguna";
 }
 
 // ====================
@@ -83,6 +106,9 @@ function renderReservas() {
     else if (reserva.estado === "Finalizada") badgeClass = "bg-primary";
     else if (reserva.estado === "No Show") badgeClass = "bg-dark";
 
+    const emojiOcasion = obtenerEmojiOcasion(reserva.ocasionEspecial);
+    const textoOcasion = obtenerTextoOcasion(reserva.ocasionEspecial);
+
     card.innerHTML = `
       <div class="card h-100">
         <div class="card-body">
@@ -93,7 +119,10 @@ function renderReservas() {
           <p class="card-text"><i class="bi bi-people"></i> ${reserva.numPersonas} personas</p>
           <p class="card-text"><i class="bi bi-calendar"></i> ${reserva.fechaReserva} ${reserva.horaReserva}</p>
           <p class="card-text"><i class="bi bi-table"></i> Mesa: ${reserva.idMesaAsignada}</p>
-          <p class="card-text"><i class="bi bi-star"></i> Ocasión: ${reserva.ocasionEspecial || "Ninguna"}</p>
+          <p class="card-text">
+            <span style="font-size: 1.5rem;">${emojiOcasion}</span> 
+            <strong>Ocasión:</strong> ${textoOcasion}
+          </p>
           <p class="card-text"><i class="bi bi-pencil"></i> Notas: ${reserva.notasAdicionales || "Ninguna"}</p>
         </div>
         <div class="card-footer bg-transparent">
@@ -185,24 +214,52 @@ function editarReserva(idReserva) {
     return;
   }
 
+  // Llenar select de mesas disponibles
+  const selectMesasEdit = document.getElementById("editMesaReserva");
+  selectMesasEdit.innerHTML = '<option value="">Seleccione una mesa</option>';
+  const mesas = obtenerMesas();
+  mesas.forEach(mesa => {
+    const option = document.createElement("option");
+    option.value = mesa.id;
+    option.textContent = `${mesa.id} (${mesa.capacidad} personas, ${mesa.ubicacion})`;
+    option.selected = mesa.id === reserva.idMesaAsignada;
+    selectMesasEdit.appendChild(option);
+  });
+
   document.getElementById("editIdReserva").value = reserva.idReserva;
   document.getElementById("editNombreCliente").value = reserva.nombreCliente;
   document.getElementById("editNumPersonas").value = reserva.numPersonas;
   document.getElementById("editFechaReserva").value = reserva.fechaReserva;
   document.getElementById("editHoraReserva").value = reserva.horaReserva;
-  document.getElementById("editMesaReserva").value = reserva.idMesaAsignada;
-  document.getElementById("editOcasion").value = reserva.ocasionEspecial;
   document.getElementById("editNotasAdicionales").value = reserva.notasAdicionales;
   document.getElementById("editEstadoReserva").value = reserva.estado;
 
+  // Establecer la ocasión seleccionada
+  document.getElementById("editOcasion").value = reserva.ocasionEspecial;
+
   const modal = new bootstrap.Modal(document.getElementById("modalEditarReserva"));
   modal.show();
+}
+
+// Inicializar selects de ocasiones con emojis
+function inicializarSelectOcasiones() {
+  const selectEditOcasion = document.getElementById("editOcasion");
+  if (selectEditOcasion) {
+    selectEditOcasion.innerHTML = "";
+    OCASIONES_ESPECIALES.forEach(ocasion => {
+      const option = document.createElement("option");
+      option.value = ocasion.value;
+      option.textContent = `${ocasion.emoji} ${ocasion.text}`;
+      selectEditOcasion.appendChild(option);
+    });
+  }
 }
 
 // ====================
 // Listeners
 // ====================
 document.addEventListener("DOMContentLoaded", () => {
+  inicializarSelectOcasiones();
   renderReservas();
 
   document.getElementById("formEditarReserva").addEventListener("submit", function (e) {

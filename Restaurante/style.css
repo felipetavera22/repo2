@@ -1,16 +1,14 @@
 body {
     background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url(./restaurant-interior.jpg);
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    background-color: #f0f0f0;
+
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 25%, #e74c3c 75%, #c0392b 100%);
 }
 
 .conten {
-    background: linear-gradient(135deg, #058378 0%, #495057 100%);
-    color: white;
+    background: linear-gradient(135deg, #889295 0%, #bdc3c7 100%);
+    font-weight: bold;
+    color: rgb(0, 0, 0);
 }
 
 .card {
@@ -126,6 +124,17 @@ body {
 .custom-select-container .dropdown-item i {
   width: 20px;
   text-align: center;
+}
+
+.ocasion-emoji {
+  font-size: 1.8rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+select option {
+  padding: 8px;
+  font-size: 1rem;
 }
 
 /* Responsive adjustments */
