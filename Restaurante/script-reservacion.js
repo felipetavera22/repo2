@@ -20,6 +20,10 @@ function obtenerMesas() {
   return Array.isArray(mesas) ? mesas : [];
 }
 
+function guardarMesas(mesas) {
+  localStorage.setItem("mesas", JSON.stringify(mesas));
+}
+
 function obtenerReservas() {
   const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
   return Array.isArray(reservas) ? reservas : [];
@@ -30,36 +34,64 @@ function guardarReservas(reservas) {
 }
 
 // ====================
-// Utilidades
+// Utilidades con SweetAlert2
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
-  const toastMessage = document.getElementById("toastMessage");
+  const iconos = {
+    success: "success",
+    error: "error",
+    warning: "warning",
+    info: "info"
+  };
 
-  toastMessage.textContent = mensaje;
-  document.getElementById("liveToast").className =
-    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
-
-  toast.show();
+  Swal.fire({
+    icon: iconos[tipo] || "info",
+    title: tipo === "success" ? "¡Éxito!" : tipo === "error" ? "Error" : "Información",
+    text: mensaje,
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
 }
 
 function mostrarConfirmacion(mensaje, callback) {
-  document.getElementById("modalConfirmacionMensaje").textContent = mensaje;
-
-  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacion"));
-  modal.show();
-
-  const botonConfirmar = document.getElementById("btnConfirmarAccion");
-
-  const nuevoBoton = botonConfirmar.cloneNode(true);
-  botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
-
-  nuevoBoton.addEventListener("click", () => {
-    modal.hide();
-    if (typeof callback === "function") {
+  Swal.fire({
+    title: "¿Está seguro?",
+    text: mensaje,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, confirmar",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed && typeof callback === "function") {
       callback();
     }
   });
+}
+
+// Función para liberar una mesa (cambiarla a disponible)
+function liberarMesa(idMesa) {
+  const mesas = obtenerMesas();
+  const mesaIndex = mesas.findIndex(m => m.id === idMesa);
+  
+  if (mesaIndex !== -1) {
+    // Verificar si hay otras reservas activas para esta mesa
+    const reservas = obtenerReservas();
+    const reservasActivas = reservas.filter(r => 
+      r.idMesaAsignada === idMesa && 
+      (r.estado === "Pendiente" || r.estado === "Confirmada")
+    );
+    
+    // Solo liberar la mesa si no hay más reservas activas
+    if (reservasActivas.length === 0) {
+      mesas[mesaIndex].estado = "disponible";
+      guardarMesas(mesas);
+    }
+  }
 }
 
 // Función para obtener el emoji de la ocasión
@@ -159,10 +191,21 @@ function cancelarReserva(idReserva) {
       return;
     }
 
+    const idMesa = reservas[reservaIndex].idMesaAsignada;
     reservas[reservaIndex].estado = "Cancelada";
     guardarReservas(reservas);
 
-    mostrarMensaje("Reserva cancelada correctamente", "success");
+    // Liberar la mesa
+    liberarMesa(idMesa);
+
+    Swal.fire({
+      icon: "success",
+      title: "¡Reserva cancelada!",
+      text: "La reserva ha sido cancelada y la mesa está disponible nuevamente",
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
     renderReservas();
   });
 }
@@ -177,10 +220,21 @@ function finalizarReserva(idReserva) {
       return;
     }
 
+    const idMesa = reservas[reservaIndex].idMesaAsignada;
     reservas[reservaIndex].estado = "Finalizada";
     guardarReservas(reservas);
 
-    mostrarMensaje("Reserva finalizada correctamente", "success");
+    // Liberar la mesa
+    liberarMesa(idMesa);
+
+    Swal.fire({
+      icon: "success",
+      title: "¡Reserva finalizada!",
+      text: "La reserva ha sido completada exitosamente",
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
     renderReservas();
   });
 }
@@ -195,10 +249,21 @@ function marcarNoShow(idReserva) {
       return;
     }
 
+    const idMesa = reservas[reservaIndex].idMesaAsignada;
     reservas[reservaIndex].estado = "No Show";
     guardarReservas(reservas);
 
-    mostrarMensaje("Reserva marcada como No Show", "success");
+    // Liberar la mesa
+    liberarMesa(idMesa);
+
+    Swal.fire({
+      icon: "info",
+      title: "Marcado como No Show",
+      text: "La reserva ha sido marcada como No Show y la mesa está disponible",
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
     renderReservas();
   });
 }
@@ -262,7 +327,11 @@ document.addEventListener("DOMContentLoaded", () => {
   inicializarSelectOcasiones();
   renderReservas();
 
-  document.getElementById("formEditarReserva").addEventListener("submit", function (e) {
+  // Guardar cambios al editar reserva
+  const formEditarReserva = document.getElementById("formEditarReserva");
+  formEditarReserva.setAttribute("novalidate", "");
+  
+  formEditarReserva.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const idReserva = document.getElementById("editIdReserva").value;
@@ -274,24 +343,67 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const mesaAnterior = reservas[reservaIndex].idMesaAsignada;
+    const nuevaMesa = document.getElementById("editMesaReserva").value;
+    const nuevoEstado = document.getElementById("editEstadoReserva").value;
+    const estadoAnterior = reservas[reservaIndex].estado;
+
     reservas[reservaIndex] = {
       ...reservas[reservaIndex],
       nombreCliente: document.getElementById("editNombreCliente").value.trim(),
       numPersonas: parseInt(document.getElementById("editNumPersonas").value, 10),
       fechaReserva: document.getElementById("editFechaReserva").value,
       horaReserva: document.getElementById("editHoraReserva").value,
-      idMesaAsignada: document.getElementById("editMesaReserva").value,
+      idMesaAsignada: nuevaMesa,
       ocasionEspecial: document.getElementById("editOcasion").value,
       notasAdicionales: document.getElementById("editNotasAdicionales").value.trim(),
-      estado: document.getElementById("editEstadoReserva").value
+      estado: nuevoEstado
     };
 
     guardarReservas(reservas);
 
+    // Gestión de estados de las mesas
+    const mesas = obtenerMesas();
+    
+    // Si cambió la mesa, liberar la anterior y ocupar la nueva
+    if (mesaAnterior !== nuevaMesa) {
+      liberarMesa(mesaAnterior);
+      
+      if (nuevoEstado === "Pendiente" || nuevoEstado === "Confirmada") {
+        const nuevaMesaIndex = mesas.findIndex(m => m.id === nuevaMesa);
+        if (nuevaMesaIndex !== -1) {
+          mesas[nuevaMesaIndex].estado = "ocupada";
+          guardarMesas(mesas);
+        }
+      }
+    } else {
+      // Si el estado cambió a Cancelada, Finalizada o No Show, liberar la mesa
+      if ((estadoAnterior === "Pendiente" || estadoAnterior === "Confirmada") &&
+          (nuevoEstado === "Cancelada" || nuevoEstado === "Finalizada" || nuevoEstado === "No Show")) {
+        liberarMesa(nuevaMesa);
+      }
+      // Si el estado cambió de inactivo a activo, ocupar la mesa
+      else if ((estadoAnterior === "Cancelada" || estadoAnterior === "Finalizada" || estadoAnterior === "No Show") &&
+               (nuevoEstado === "Pendiente" || nuevoEstado === "Confirmada")) {
+        const mesaIndex = mesas.findIndex(m => m.id === nuevaMesa);
+        if (mesaIndex !== -1) {
+          mesas[mesaIndex].estado = "ocupada";
+          guardarMesas(mesas);
+        }
+      }
+    }
+
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarReserva"));
     modal.hide();
 
-    mostrarMensaje("Reserva actualizada correctamente", "success");
+    Swal.fire({
+      icon: "success",
+      title: "¡Actualizada!",
+      text: "La reserva ha sido actualizada correctamente",
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
     renderReservas();
   });
 

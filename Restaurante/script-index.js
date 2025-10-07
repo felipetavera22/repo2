@@ -34,33 +34,40 @@ function guardarReservas(reservas) {
 }
 
 // ====================
-// Utilidades
+// Utilidades con SweetAlert2
 // ====================
 function mostrarMensaje(mensaje, tipo = "info") {
-  const toast = new bootstrap.Toast(document.getElementById("liveToast"));
-  const toastMessage = document.getElementById("toastMessage");
+  const iconos = {
+    success: "success",
+    error: "error",
+    warning: "warning",
+    info: "info"
+  };
 
-  toastMessage.textContent = mensaje;
-  document.getElementById("liveToast").className =
-    `toast ${tipo === "error" ? "bg-danger" : tipo === "success" ? "bg-success" : "bg-info"} text-white`;
-
-  toast.show();
+  Swal.fire({
+    icon: iconos[tipo] || "info",
+    title: tipo === "success" ? "¡Éxito!" : tipo === "error" ? "Error" : "Información",
+    text: mensaje,
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
 }
 
 function mostrarConfirmacion(mensaje, callback) {
-  document.getElementById("modalConfirmacionMensaje").textContent = mensaje;
-
-  const modal = new bootstrap.Modal(document.getElementById("modalConfirmacion"));
-  modal.show();
-
-  const botonConfirmar = document.getElementById("btnConfirmarAccion");
-
-  const nuevoBoton = botonConfirmar.cloneNode(true);
-  botonConfirmar.parentNode.replaceChild(nuevoBoton, botonConfirmar);
-
-  nuevoBoton.addEventListener("click", () => {
-    modal.hide();
-    if (typeof callback === "function") {
+  Swal.fire({
+    title: "¿Está seguro?",
+    text: mensaje,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Sí, confirmar",
+    cancelButtonText: "Cancelar"
+  }).then((result) => {
+    if (result.isConfirmed && typeof callback === "function") {
       callback();
     }
   });
@@ -269,7 +276,7 @@ function editarMesa(id) {
 }
 
 function eliminarMesa(id) {
-  mostrarConfirmacion("¿Está seguro de que desea eliminar esta mesa? Esta acción no se puede deshacer.", () => {
+  mostrarConfirmacion("Esta acción no se puede deshacer. ¿Desea eliminar esta mesa?", () => {
     let mesas = obtenerMesas();
     const reservas = obtenerReservas();
 
@@ -279,14 +286,26 @@ function eliminarMesa(id) {
     );
 
     if (reservasActivas.length > 0) {
-      mostrarMensaje("No se puede eliminar la mesa porque tiene reservas activas", "error");
+      Swal.fire({
+        icon: "error",
+        title: "No se puede eliminar",
+        text: "La mesa tiene reservas activas asociadas",
+        confirmButtonText: "Entendido"
+      });
       return;
     }
 
     mesas = mesas.filter(m => m.id !== id);
     guardarMesas(mesas);
     renderMesas();
-    mostrarMensaje("Mesa eliminada correctamente", "success");
+    
+    Swal.fire({
+      icon: "success",
+      title: "¡Eliminado!",
+      text: "La mesa ha sido eliminada correctamente",
+      timer: 2000,
+      showConfirmButton: false
+    });
   });
 }
 
@@ -334,7 +353,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Guardar nueva mesa
-  document.getElementById("formAgregarMesa").addEventListener("submit", function(e) {
+  const formAgregarMesa = document.getElementById("formAgregarMesa");
+  formAgregarMesa.setAttribute("novalidate", "");
+  
+  formAgregarMesa.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const id = document.getElementById("nuevaMesaNumero").value.trim();
@@ -371,12 +393,23 @@ document.addEventListener("DOMContentLoaded", function() {
     modal.hide();
     
     renderMesas();
-    mostrarMensaje("Mesa agregada correctamente", "success");
+    
+    Swal.fire({
+      icon: "success",
+      title: "¡Mesa agregada!",
+      text: `La mesa ${mesaId} ha sido creada correctamente`,
+      showConfirmButton: false,
+      timer: 2000
+    });
+    
     this.reset();
   });
 
   // Guardar nueva reserva
-  document.getElementById("formReserva").addEventListener("submit", function(e) {
+  const formReserva = document.getElementById("formReserva");
+  formReserva.setAttribute("novalidate", "");
+  
+  formReserva.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const nombreCliente = document.getElementById("nombreCliente").value.trim();
@@ -427,15 +460,37 @@ document.addEventListener("DOMContentLoaded", function() {
     reservas.push(nuevaReserva);
     guardarReservas(reservas);
 
+    // Cambiar el estado de la mesa a "ocupada"
+    const mesas = obtenerMesas();
+    const mesaIndex = mesas.findIndex(m => m.id === idMesaAsignada);
+    if (mesaIndex !== -1) {
+      mesas[mesaIndex].estado = "ocupada";
+      guardarMesas(mesas);
+      renderMesas();
+    }
+
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalReserva"));
     modal.hide();
 
-    mostrarMensaje("Reserva creada correctamente", "success");
+    Swal.fire({
+      icon: "success",
+      title: "¡Reserva creada!",
+      html: `
+        <p><strong>Cliente:</strong> ${nombreCliente}</p>
+        <p><strong>Mesa:</strong> ${idMesaAsignada}</p>
+        <p><strong>Fecha:</strong> ${fechaReserva} a las ${horaReserva}</p>
+      `,
+      confirmButtonText: "Entendido"
+    });
+    
     this.reset();
   });
 
   // Guardar cambios al editar mesa
-  document.getElementById("formEditarMesa").addEventListener("submit", function(e) {
+  const formEditarMesa = document.getElementById("formEditarMesa");
+  formEditarMesa.setAttribute("novalidate", "");
+  
+  formEditarMesa.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const idOriginal = document.getElementById("editMesaId").value;
@@ -488,7 +543,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarMesa"));
     modal.hide();
 
-    mostrarMensaje("Mesa actualizada correctamente", "success");
+    Swal.fire({
+      icon: "success",
+      title: "¡Actualizado!",
+      text: "La mesa ha sido actualizada correctamente",
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
     renderMesas();
   });
 });
