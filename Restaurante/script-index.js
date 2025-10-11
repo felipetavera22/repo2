@@ -76,7 +76,7 @@ function mostrarConfirmacion(mensaje, callback) {
 function validarFechaPosterior(fecha) {
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
-  return new Date(fecha) > hoy;
+  return new Date(fecha) >= hoy;
 }
 
 function validarHoraRango(hora) {
@@ -355,21 +355,21 @@ document.addEventListener("DOMContentLoaded", function() {
   // Guardar nueva mesa
   const formAgregarMesa = document.getElementById("formAgregarMesa");
   formAgregarMesa.setAttribute("novalidate", "");
-  
+
   formAgregarMesa.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const id = document.getElementById("nuevaMesaNumero").value.trim();
-    const capacidad = parseInt(document.getElementById("nuevaMesaCapacidad").value, 10);
+    const capacidad = document.getElementById("nuevaMesaCapacidad").value.trim();
     const ubicacion = document.getElementById("nuevaMesaUbicacion").value.trim();
 
-    if (!id || !/^[0-9]+$/.test(id)) {
-      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
+    if (!id || !/^[1-9][0-9]*$/.test(id)) {
+      mostrarMensaje("El identificador de la mesa debe ser un número válido sin ceros a la izquierda (mínimo 1)", "error");
       return;
     }
 
-    if (isNaN(capacidad) || capacidad <= 0) {
-      mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
+    if (!capacidad || !/^[1-9][0-9]*$/.test(capacidad)) {
+      mostrarMensaje("La capacidad debe ser un número válido sin ceros a la izquierda (mínimo 1)", "error");
       return;
     }
 
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    mesas.push({ id: mesaId, capacidad, ubicacion, estado: "disponible" });
+    mesas.push({ id: mesaId, capacidad: parseInt(capacidad, 10), ubicacion, estado: "disponible" });
     guardarMesas(mesas);
     
     const modal = bootstrap.Modal.getInstance(document.getElementById("modalAgregarMesa"));
@@ -495,19 +495,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const idOriginal = document.getElementById("editMesaId").value;
     const idNum = document.getElementById("editMesaIdentificador").value.trim();
-    const capacidad = parseInt(document.getElementById("editMesaCapacidad").value, 10);
+    const capacidad = document.getElementById("editMesaCapacidad").value.trim();
     const ubicacion = document.getElementById("editMesaUbicacion").value.trim();
     const estado = document.getElementById("editMesaEstado").value;
 
-    if (!/^[0-9]+$/.test(idNum)) {
-      mostrarMensaje("El identificador de la mesa debe ser un número válido", "error");
+    if (!idNum || !/^[1-9][0-9]*$/.test(idNum)) {
+      mostrarMensaje("El identificador de la mesa debe ser un número válido sin ceros a la izquierda (mínimo 1)", "error");
       return;
     }
-    if (isNaN(capacidad) || capacidad <= 0) {
-      mostrarMensaje("La capacidad debe ser un número positivo mayor que cero", "error");
+    
+    if (!capacidad || !/^[1-9][0-9]*$/.test(capacidad)) {
+      mostrarMensaje("La capacidad debe ser un número válido sin ceros a la izquierda (mínimo 1)", "error");
       return;
     }
-    if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
+    
+    if (!ubicacion || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ubicacion)) {
       mostrarMensaje("La ubicación solo puede contener letras", "error");
       return;
     }
@@ -526,7 +528,7 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
 
-    mesas[mesaIndex] = { id: mesaId, capacidad, ubicacion, estado };
+    mesas[mesaIndex] = { id: mesaId, capacidad: parseInt(capacidad, 10), ubicacion, estado };
 
     if (mesaId !== idOriginal) {
       const reservas = obtenerReservas();
