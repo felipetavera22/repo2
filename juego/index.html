@@ -4,147 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video de fondo con música</title>
-  <style>
-    /* Fondo con video */
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
-
-    /* Capa oscura para mejor contraste */
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 0;
-    }
-
-    /* Contenido */
-    .contenido {
-      position: relative;
-      z-index: 1;
-      color: white;
-      text-align: center;
-      top: 40%;
-    }
-
-    .titulo {
-      font-size: 3rem;
-      font-weight: bold;
-    }
-
-    .linea {
-      width: 150px;
-      height: 2px;
-      background-color: white;
-      margin: 10px auto;
-    }
-
-    .subtitulo {
-      font-size: 1.5rem;
-      font-weight: normal;
-    }
-
-    /* Controles de audio */
-    .audio-controls {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.7);
-      padding: 15px;
-      border-radius: 10px;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .audio-controls button {
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .audio-controls button:hover {
-      background: #f0f0f0;
-    }
-
-    .audio-controls button svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .volume-control {
-      width: 80px;
-    }
-  </style>
+  <link rel="stylesheet" href="./index.css">
 </head>
 <body>
-  <!-- Video -->
+
   <video autoplay loop muted playsinline>
     <source src="./need.mp4" type="video/mp4">
     Tu navegador no soporta video en HTML5.
   </video>
-
-  <!-- Capa oscura -->
+  
   <div class="overlay"></div>
 
-  <!-- Texto estilo imagen -->
   <div class="contenido">
     <div class="titulo">Bienvenido</div>
     <div class="linea"></div>
     <div class="subtitulo">Disfruta la experiencia</div>
+      <a href="garaje.html" class="garaje-btn">Garaje</a>
   </div>
 
-
-
-  <!-- Audio -->
-  <audio id="backgroundMusic" loop>
+  <audio id="backgroundMusic" loop autoplay>
     <source src="./Eminem - Till I Collapse [HD] - msvogue23.mp3" type="audio/mpeg">
     Tu navegador no soporta el elemento de audio.
   </audio>
-
-  <script>
-    // Elementos del DOM
-    const audio = document.getElementById('backgroundMusic');
-
-
-
-
-
-    
-
-    // Reproducir automáticamente al cargar la página (con manejo de errores)
-    window.addEventListener('load', function() {
-      audio.play().catch(function(error) {
-        console.log("La reproducción automática fue bloqueada: ", error);
-        // Mostrar el botón de play para que el usuario inicie manualmente
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
-      });
-    });
-  </script>
+  <script src="./index.js"></script>
 </body>
 </html>
