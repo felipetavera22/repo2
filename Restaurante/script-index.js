@@ -426,10 +426,6 @@ document.addEventListener("DOMContentLoaded", function() {
       mostrarMensaje("El número de personas debe ser un número positivo mayor que cero", "error");
       return;
     }
-    if (!validarFechaPosterior(fechaReserva)) {
-      mostrarMensaje("La fecha debe ser posterior a hoy", "error");
-      return;
-    }
     if (!validarHoraRango(horaReserva)) {
       mostrarMensaje("La hora debe estar entre 8:00 AM y 8:00 PM", "error");
       return;
