@@ -73,6 +73,36 @@ function mostrarConfirmacion(mensaje, callback) {
   });
 }
 
+function validarFechaPosterior(fecha) {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  return new Date(fecha) >= hoy;
+}
+
+function validarHoraRango(hora) {
+  const [horas] = hora.split(":").map(Number);
+  return horas >= 8 && horas < 20;
+}
+
+function esMesaDisponible(idMesa, fecha, hora, excluirReservaId = null) {
+  const reservas = obtenerReservas();
+  const mesa = obtenerMesas().find(m => m.id === idMesa);
+
+  if (!mesa || mesa.estado !== "disponible") return false;
+
+  const reservasCoincidentes = reservas.filter(r => {
+    if (excluirReservaId && r.idReserva === excluirReservaId) return false;
+    return (
+      r.idMesaAsignada === idMesa &&
+      r.fechaReserva === fecha &&
+      r.horaReserva === hora &&
+      r.estado !== "Cancelada"
+    );
+  });
+
+  return reservasCoincidentes.length === 0;
+}
+
 // Función para liberar una mesa (cambiarla a disponible)
 function liberarMesa(idMesa) {
   const mesas = obtenerMesas();
@@ -104,6 +134,90 @@ function obtenerEmojiOcasion(valorOcasion) {
 function obtenerTextoOcasion(valorOcasion) {
   const ocasion = OCASIONES_ESPECIALES.find(o => o.value === valorOcasion);
   return ocasion ? ocasion.text : "Ninguna";
+}
+
+// ====================
+// Sistema de actualización automática de estados
+// ====================
+function verificarYActualizarEstadosReservas() {
+  const ahora = new Date();
+  const fechaActual = ahora.toISOString().split('T')[0];
+  const horaActual = ahora.getHours().toString().padStart(2, '0') + ':' + ahora.getMinutes().toString().padStart(2, '0');
+  
+  const reservas = obtenerReservas();
+  const mesas = obtenerMesas();
+  let huboActualizacionReservas = false;
+  let huboActualizacionMesas = false;
+
+  reservas.forEach((reserva, index) => {
+    // Solo procesar reservas Confirmadas o Pendientes
+    if (reserva.estado !== "Confirmada" && reserva.estado !== "Pendiente") {
+      return;
+    }
+
+    const fechaReserva = reserva.fechaReserva;
+    const horaReserva = reserva.horaReserva;
+
+    // Crear objetos Date para comparación precisa
+    const fechaHoraReserva = new Date(fechaReserva + 'T' + horaReserva + ':00');
+    const fechaHoraActual = new Date(fechaActual + 'T' + horaActual + ':00');
+
+    // Si la hora de la reserva ya llegó o pasó
+    if (fechaHoraReserva <= fechaHoraActual) {
+      // Cambiar el estado de la reserva a "Confirmada" (ocupada activamente)
+      if (reserva.estado === "Pendiente") {
+        reservas[index].estado = "Confirmada";
+        huboActualizacionReservas = true;
+        console.log(`Reserva ${reserva.idReserva} cambiada a Confirmada automáticamente`);
+      }
+      
+      // Cambiar el estado de la mesa a "ocupada"
+      const mesaIndex = mesas.findIndex(m => m.id === reserva.idMesaAsignada);
+      if (mesaIndex !== -1 && mesas[mesaIndex].estado !== "ocupada") {
+        mesas[mesaIndex].estado = "ocupada";
+        huboActualizacionMesas = true;
+        console.log(`Mesa ${reserva.idMesaAsignada} cambiada a ocupada automáticamente - Reserva: ${fechaReserva} ${horaReserva}`);
+      }
+    }
+  });
+
+  if (huboActualizacionReservas) {
+    guardarReservas(reservas);
+    // Renderizar reservas si estamos en la página de reservas
+    if (typeof renderReservas === 'function') {
+      renderReservas();
+    }
+  }
+
+  if (huboActualizacionMesas) {
+    guardarMesas(mesas);
+    // Renderizar mesas si estamos en la página de mesas
+    if (typeof renderMesas === 'function') {
+      renderMesas();
+    }
+  }
+}
+
+// Iniciar verificación automática cada minuto
+let intervaloVerificacion;
+
+function iniciarVerificacionAutomatica() {
+  // Verificar inmediatamente
+  verificarYActualizarEstadosReservas();
+  
+  // Luego verificar cada 60 segundos (1 minuto)
+  if (intervaloVerificacion) {
+    clearInterval(intervaloVerificacion);
+  }
+  intervaloVerificacion = setInterval(verificarYActualizarEstadosReservas, 60000);
+}
+
+// Detener verificación automática (útil para limpieza)
+function detenerVerificacionAutomatica() {
+  if (intervaloVerificacion) {
+    clearInterval(intervaloVerificacion);
+    intervaloVerificacion = null;
+  }
 }
 
 // ====================
@@ -176,6 +290,43 @@ function renderReservas() {
 
     lista.appendChild(card);
   });
+}
+
+// ====================
+// Función para reservar mesa (usar en modal)
+// ====================
+function reservarMesa(idMesa = null) {
+  const selectMesas = document.getElementById("mesaReserva");
+  selectMesas.innerHTML = '<option value="">Seleccione una mesa</option>';
+
+  const mesas = obtenerMesas().filter(m => m.estado === "disponible");
+  mesas.forEach(mesa => {
+    const option = document.createElement("option");
+    option.value = mesa.id;
+    option.textContent = `${mesa.id} (${mesa.capacidad} personas, ${mesa.ubicacion})`;
+    if (idMesa && mesa.id === idMesa) {
+      option.selected = true;
+    }
+    selectMesas.appendChild(option);
+  });
+
+  const hoy = new Date().toISOString().split("T")[0];
+  document.getElementById("fechaReserva").min = hoy;
+
+  // Inicializar select de ocasiones
+  const selectOcasion = document.getElementById("ocasion");
+  if (selectOcasion) {
+    selectOcasion.innerHTML = "";
+    OCASIONES_ESPECIALES.forEach(ocasion => {
+      const option = document.createElement("option");
+      option.value = ocasion.value;
+      option.textContent = `${ocasion.emoji} ${ocasion.text}`;
+      selectOcasion.appendChild(option);
+    });
+  }
+
+  const modal = new bootstrap.Modal(document.getElementById("modalReserva"));
+  modal.show();
 }
 
 // ====================
@@ -326,6 +477,84 @@ function inicializarSelectOcasiones() {
 document.addEventListener("DOMContentLoaded", () => {
   inicializarSelectOcasiones();
   renderReservas();
+  
+  // Iniciar verificación automática de estados
+  iniciarVerificacionAutomatica();
+
+  // Guardar nueva reserva
+  const formReserva = document.getElementById("formReserva");
+  if (formReserva) {
+    formReserva.setAttribute("novalidate", "");
+    
+    formReserva.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nombreCliente = document.getElementById("nombreCliente").value.trim();
+      const numPersonas = parseInt(document.getElementById("numPersonas").value, 10);
+      const fechaReserva = document.getElementById("fechaReserva").value;
+      const horaReserva = document.getElementById("horaReserva").value;
+      const idMesaAsignada = document.getElementById("mesaReserva").value;
+
+      if (!nombreCliente) {
+        mostrarMensaje("El nombre del cliente es obligatorio", "error");
+        return;
+      }
+      if (isNaN(numPersonas) || numPersonas <= 0) {
+        mostrarMensaje("El número de personas debe ser un número positivo mayor que cero", "error");
+        return;
+      }
+      if (!validarFechaPosterior(fechaReserva)) {
+        mostrarMensaje("La fecha debe ser posterior o igual a hoy", "error");
+        return;
+      }
+      if (!validarHoraRango(horaReserva)) {
+        mostrarMensaje("La hora debe estar entre 8:00 AM y 8:00 PM", "error");
+        return;
+      }
+      if (!idMesaAsignada) {
+        mostrarMensaje("Debe seleccionar una mesa", "error");
+        return;
+      }
+      if (!esMesaDisponible(idMesaAsignada, fechaReserva, horaReserva)) {
+        mostrarMensaje("La mesa seleccionada no está disponible en esa fecha y hora", "error");
+        return;
+      }
+
+      const nuevaReserva = {
+        idReserva: "RES" + Date.now(),
+        nombreCliente,
+        numPersonas,
+        fechaReserva,
+        horaReserva,
+        idMesaAsignada,
+        ocasionEspecial: document.getElementById("ocasion").value,
+        notasAdicionales: document.getElementById("notasAdicionales").value.trim(),
+        estado: "Pendiente",
+        fechaCreacion: new Date().toISOString().split("T")[0]
+      };
+
+      const reservas = obtenerReservas();
+      reservas.push(nuevaReserva);
+      guardarReservas(reservas);
+
+      const modal = bootstrap.Modal.getInstance(document.getElementById("modalReserva"));
+      modal.hide();
+
+      Swal.fire({
+        icon: "success",
+        title: "¡Reserva creada!",
+        html: `
+          <p><strong>Cliente:</strong> ${nombreCliente}</p>
+          <p><strong>Mesa:</strong> ${idMesaAsignada}</p>
+          <p><strong>Fecha:</strong> ${fechaReserva} a las ${horaReserva}</p>
+        `,
+        confirmButtonText: "Entendido"
+      });
+      
+      this.reset();
+      renderReservas();
+    });
+  }
 
   // Guardar cambios al editar reserva
   const formEditarReserva = document.getElementById("formEditarReserva");
@@ -414,4 +643,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("filtroOcasion").value = "";
     renderReservas();
   });
+});
+
+// Limpiar el intervalo cuando se cierre la página
+window.addEventListener("beforeunload", () => {
+  detenerVerificacionAutomatica();
 });
