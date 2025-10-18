@@ -1,3 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     background-image: url('./garaje.png');
     background-size: cover;
@@ -7,4 +15,266 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    font-family: 'Cinzel', serif;
+    overflow: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+}
+
+.container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.title {
+    font-size: 1.2rem;
+    color: #fff;
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3),
+        2px 2px 5px rgba(0, 0, 0, 0.8);
+    margin-bottom: 15px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+    text-align: center;
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 
+            0 0 10px rgba(255, 255, 255, 0.5),
+            0 0 20px rgba(255, 255, 255, 0.3),
+            2px 2px 5px rgba(0, 0, 0, 0.8);
+    }
+    to {
+        text-shadow: 
+            0 0 20px rgba(255, 255, 255, 0.8),
+            0 0 30px rgba(255, 255, 255, 0.5),
+            2px 2px 5px rgba(0, 0, 0, 0.8);
+    }
+}
+
+.menu {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu-item:hover {
+    transform: scale(1.15) translateY(-5px);
+}
+
+.icon-container {
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #d4a574;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.6);
+}
+
+.menu-item:hover .icon-container {
+    border-color: #ffd700;
+    box-shadow: 
+        0 0 30px rgba(212, 165, 116, 0.6),
+        0 5px 30px rgba(0, 0, 0, 0.8);
+    background: rgba(212, 165, 116, 0.1);
+}
+
+.icon-container::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 1px solid #d4a574;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.menu-item:hover .icon-container::before {
+    opacity: 1;
+}
+
+.icon {
+    font-size: 30px;
+    color: #fff;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.menu-label {
+    font-size: 0.55rem;
+    color: #d4a574;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover .menu-label {
+    color: #ffd700;
+    text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.8),
+        2px 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Icono de auto estilo Need for Speed */
+.car-icon {
+    width: 35px;
+    height: 22px;
+    position: relative;
+}
+
+.car-body {
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(to bottom, #fff, #ccc);
+    border-radius: 2px;
+    position: relative;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.car-window {
+    width: 40%;
+    height: 8px;
+    background: linear-gradient(135deg, #4a90e2, #2c5aa0);
+    position: absolute;
+    top: -6px;
+    left: 30%;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.car-wheels {
+    position: absolute;
+    bottom: -3px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+}
+
+.wheel {
+    width: 7px;
+    height: 7px;
+    background: #333;
+    border-radius: 50%;
+    border: 1px solid #666;
+}
+
+/* Icono de dos autos */
+.two-cars {
+    width: 38px;
+    height: 25px;
+    position: relative;
+}
+
+.car-small {
+    width: 18px;
+    height: 11px;
+    position: absolute;
+}
+
+.car-small:first-child {
+    top: 0;
+    left: 0;
+    transform: rotate(-5deg);
+}
+
+.car-small:last-child {
+    bottom: 0;
+    right: 0;
+    transform: rotate(5deg);
+}
+
+/* Icono de configuración */
+.settings-icon {
+    font-size: 28px;
+}
+
+/* Flecha siguiente */
+.arrow {
+    font-size: 24px;
+    color: #d4a574;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+    0%, 100% { 
+        opacity: 0.5; 
+        transform: translateX(0); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: translateX(5px); 
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+    
+    .menu {
+        gap: 10px;
+    }
+    
+    .icon-container {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .menu-label {
+        font-size: 0.5rem;
+    }
+}
+
+/* Estilo para imágenes de iconos */
+.menu-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover .menu-icon-img {
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+    transform: scale(1.05);
 }

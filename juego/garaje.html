@@ -1,12 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Racing Game Menu</title>
     <link rel="stylesheet" href="./garaje.css">
 </head>
 <body>
-    
+    <div class="container">
+        <h1 class="title">Main Menu</h1>
+        
+        <div class="menu">
+            <div class="menu-item" onclick="selectOption('career')">
+                <div class="icon-container">
+                    <img src="./correr.png" alt="Career" class="menu-icon-img">
+                </div>
+                <div class="menu-label">Career</div>
+            </div>
+
+            <div class="menu-item" onclick="selectOption('multiplayer')">
+                <div class="icon-container">
+                    <div class="two-cars">
+                        <div class="car-small">
+                            <div class="car-body" style="height: 100%; width: 100%;"></div>
+                            <div class="car-wheels" style="bottom: -3px;">
+                                <div class="wheel" style="width: 5px; height: 5px;"></div>
+                                <div class="wheel" style="width: 5px; height: 5px;"></div>
+                            </div>
+                        </div>
+                        <div class="car-small">
+                            <div class="car-body" style="height: 100%; width: 100%;"></div>
+                            <div class="car-wheels" style="bottom: -3px;">
+                                <div class="wheel" style="width: 5px; height: 5px;"></div>
+                                <div class="wheel" style="width: 5px; height: 5px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-label">Multiplayer</div>
+            </div>
+
+            <div class="menu-item" onclick="selectOption('settings')">
+                <div class="icon-container">
+                    <div class="settings-icon">⚙️</div>
+                </div>
+                <div class="menu-label">Settings</div>
+            </div>
+
+            <div class="menu-item" onclick="selectOption('next')">
+                <div class="icon-container">
+                    <div class="arrow">▶</div>
+                </div>
+                <div class="menu-label">Next</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./menu.js"></script>
 </body>
 </html>
